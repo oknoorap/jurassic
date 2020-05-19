@@ -12,7 +12,7 @@ export const empty = () => {
 };
 
 export const log = (messages: any[], options: LoggerOptions) => {
-  let { type = "info", label = "info", padding = true } = options;
+  let { type = "info", label, padding = true } = options;
   let color;
   let logger = console.log;
 
