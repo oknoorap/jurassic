@@ -41,7 +41,7 @@ export const log = (messages: any[], options: LoggerOptions) => {
   if (padding) {
     empty();
   }
-  logger(`\x1b[${color}m%s\x1b[0m`, label);
+  logger(`\x1b[${color}m%s\x1b[0m`, `[${label}]`);
   logger(...messages);
 };
 
@@ -59,4 +59,8 @@ export const error = (...messages: any[]) => {
 
 export const success = (...messages: any[]) => {
   log(messages, { type: "success" });
+};
+
+export const line = () => {
+  console.log(Array.from({ length: 20 }).join("-"));
 };
