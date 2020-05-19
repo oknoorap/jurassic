@@ -11,6 +11,9 @@ export const empty = () => {
   console.log("");
 };
 
+export const chalk = (color: LogColor = LogColor.Cyan) =>
+  `\x1b[${color}m%s\x1b[0m`;
+
 export const log = (messages: any[], options: LoggerOptions) => {
   let { type = "info", label, padding = true } = options;
   let color;
@@ -41,7 +44,7 @@ export const log = (messages: any[], options: LoggerOptions) => {
   if (padding) {
     empty();
   }
-  logger(`\x1b[${color}m%s\x1b[0m`, `[${label}]`);
+  logger(chalk(color), `[${label}]`);
   logger(...messages);
 };
 

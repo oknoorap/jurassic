@@ -3,6 +3,7 @@ import * as path from "https://deno.land/std/path/mod.ts";
 import { Router, RouterGroups, RouterMeta } from "../@types/router.d.ts";
 import { HttpRequest, HttpResponse } from "../@types/http.d.ts";
 import * as log from "./logger.ts";
+import { isExists } from "./files.ts";
 
 const routerExt = ["ts"];
 const inBracketExpr = /\[([^\[\]]*)\]/g;
@@ -69,16 +70,30 @@ const getURLParams = (url: string, glob: string) => {
 };
 
 /**
+ * Get current `routes` root directory
+ */
+const routeCwd = () => {
+  const cwd = Deno.cwd();
+  return path.join(cwd, routesRootDir);
+};
+
+/**
+ * Check routes directory
+ */
+const checkRoutesDirExistence = async (): Promise<void> => {
+  if (!(await isExists(routeCwd()))) {
+    log.error(`\`${routesRootDir}\` directory not found.`);
+    log.empty();
+    Deno.exit();
+  }
+};
+
+/**
  * Get routers in `routes` directory
  */
-export const scanRouters = () => {
-  const cwd = Deno.cwd();
-  const routerDir = path.join(cwd, routesRootDir);
-
-  if (!Deno.statSync(routerDir).isDirectory) {
-    return [];
-  }
-
+export const scanRouters = async () => {
+  await checkRoutesDirExistence();
+  const routerDir = routeCwd();
   const routers = walkDir(routerDir).map((routePath) => {
     const params = getFileParams(routePath);
     const [, filepath] = routePath.split(routerDir);
@@ -97,9 +112,15 @@ export const scanRouters = () => {
 /**
  * Get routers, grouping by glob
  */
-export const getRouters = (): RouterGroups => {
-  const routers = scanRouters();
+export const getRouters = async (): RouterGroups => {
+  const routers = await scanRouters();
   const routerGroups: RouterGroups = {};
+
+  if (routers.length === 0) {
+    log.error(`No route files found under \`${routesRootDir}\` directory.`);
+    log.empty();
+    Deno.exit();
+  }
 
   for (const { url, path, params } of routers) {
     const glob = url.replace(inBracketExpr, "*");
@@ -201,13 +222,15 @@ export const getRouterHandler = async (
   const defaultRouter: Router = {
     headers: {},
     method: ["GET", "POST", "OPTIONS", "DELETE"],
-    onError: () => null,
+    async onError() {},
+    async onRequest() {},
   };
 
   const {
     default: handler,
     headers: routeHeaders,
     onError,
+    onRequest,
     contentType,
     method,
   }: Router = {
@@ -257,10 +280,11 @@ export const getRouterHandler = async (
 
     request.params = params;
     response.status = 200;
+    await onRequest(request, response);
     response.body = await handler(request, response);
   } catch (err) {
     log.error(request.url, err?.message);
-    response.body = onError(err, request);
+    response.body = await onError(err, request);
   }
 
   if (
