@@ -1,4 +1,4 @@
-# 🦖 Jurrasic
+# 🦖 Jurassic
 
 A Straightforward REST API Framework for Deno. Zero-config server with path-based router.
 
@@ -49,7 +49,7 @@ Type this command in your current directory, with your favourite terminal.
 If you see log below, then your server is running successfuly.
 
 ```bash
-🦖 Start jurrasic server
+🦖 Start jurassic server
 -------------------
 [server info]
 PORT: 8888

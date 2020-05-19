@@ -1,1 +1,1 @@
-# Basic Jurrasic Framework Examples
+# Basic Jurassic Framework Examples

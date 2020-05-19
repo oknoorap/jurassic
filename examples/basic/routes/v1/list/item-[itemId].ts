@@ -1,9 +1,9 @@
 import {
   HttpRequest,
   HttpResponse,
-} from "/Users/oknoorap/codes/project/jurrasic/@types/http.d.ts";
+} from "/Users/oknoorap/codes/project/jurassic/@types/http.d.ts";
 
-import * as log from "/Users/oknoorap/codes/project/jurrasic/utils/logger.ts";
+import * as log from "/Users/oknoorap/codes/project/jurassic/lib/logger.ts";
 
 export const contentType = "text";
 

@@ -28,7 +28,7 @@ type Server = {
  */
 export const logger = (logs: BootstrapLog[]) => {
   log.empty();
-  console.log("🦖 Start jurrasic server");
+  console.log("🦖 Start jurassic server");
   log.line();
 
   for (const { info, label, options } of logs.filter((item) => item)) {

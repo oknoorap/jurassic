@@ -1,1 +1,1 @@
-# Jurrasic Framework + Firebase Examples
+# Jurassic Framework + Firebase Examples
