@@ -221,7 +221,7 @@ export const getRouterHandler = async (
 
   const defaultRouter: Router = {
     headers: {},
-    method: ["GET", "POST", "OPTIONS", "DELETE"],
+    method: ["GET", "POST", "PUT", "OPTIONS", "DELETE"],
     async onError() {},
     async onRequest() {},
   };
@@ -238,7 +238,7 @@ export const getRouterHandler = async (
     ...(await import(router.path)),
   };
 
-  let headerContentType = contentType;
+  let headerContentType = contentType || "text";
   const isCommonContentType =
     CommonContentType.HTML || CommonContentType.JSON || CommonContentType.Text;
 
