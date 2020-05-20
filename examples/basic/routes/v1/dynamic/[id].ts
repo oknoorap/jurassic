@@ -4,5 +4,5 @@ import {
 } from "https://deno.land/x/jurassic/@types/http.d.ts";
 
 export default (req: HttpRequest, res: HttpResponse) => {
-  return "Hello World";
+  return `id: ${req.params.id}`;
 };
