@@ -1,6 +1,15 @@
+![Jurassic Logo](https://raw.githubusercontent.com/oknoorap/jurassic/fix/improvements/docs/logo.png)
+
 # 🦖 Jurassic
 
 A Straightforward REST API Framework for Deno. Zero-config server with path-based router.
+
+## Features
+
+✅ Zero-Config framework  
+✅ Path-based routing  
+✅ Dynamic routing using filename  
+✅ Hooks
 
 ## Getting Started
 
@@ -30,9 +39,15 @@ Just add `routes` folder in your current working directory.
 
 After that, add a `hello.ts` file as your first router, and you're done.
 
+<details open>
+<summary>Example Code</summary>
+
 ```typescript
-// path: <your_current_directory>/routes/hello.ts
-import { HttpRequest, HttpResponse } from "https://xxx/@types/routes.d.ts";
+// <your_current_directory>/routes/hello.ts
+import {
+  HttpRequest,
+  HttpResponse,
+} from "https://deno.land/x/jurassic/@types/routes.d.ts";
 
 // Route Handler
 export default (req: HttpRequest, res: HttpResponse) => {
@@ -40,13 +55,18 @@ export default (req: HttpRequest, res: HttpResponse) => {
 };
 ```
 
+</details>
+
 ### Run Server
 
 Type this command in your current directory, with your favourite terminal.
 
-`deno --allow-read --allow-net --allow-env https://xxx` (WIP will updated URL later) .
+`deno --allow-read --allow-net --allow-env https://deno.land/x/jurassic/server.ts` (WIP will updated URL later) .
 
 If you see log below, then your server is running successfuly.
+
+<details open>
+<summary>Console Log</summary>
 
 ```bash
 🦖 Start jurassic server
@@ -59,6 +79,8 @@ PORT: 8888
 -------------------
 ```
 
+</details>
+
 Now access test in your browser `http://localhost/hello`.
 
 ### Dynamic Routes Params
@@ -69,25 +91,36 @@ To create a dynamic route with params, just use bracket as directory or file nam
 
 You can accessing param within route handler with `req.params`, e.g `req.params.myParams`.
 
-```typescript
-// Example
-// path: <your_current_directory>/routes/post/[id].ts
+<details open>
+<summary>Example Code</summary>
 
-import { HttpRequest, HttpResponse } from "https://xxx/@types/routes.d.ts";
+```typescript
+// <your_current_directory>/routes/post/[id].ts
+import {
+  HttpRequest,
+  HttpResponse,
+} from "https://deno.land/x/jurassic/@types/routes.d.ts";
 
 export default (req: HttpRequest, res: HttpResponse) => {
   return `Post ID: ${req.params.id}`;
 };
 ```
 
+</details>
+
 ### Router Methods
 
 By default your router will accepts all methods (`GET`, `POST`, `PUT`, `OPTIONS`, `DELETE`), but you can define or restrict it, to do that just export `method` variable. It support array or string.
 
+<details open>
+<summary>Example Code</summary>
+
 ```typescript
-// Example
-// path: <your_current_directory>/v1/your-router.ts
-import { HttpRequest, HttpResponse } from "https://xxx/@types/routes.d.ts";
+// <your_current_directory>/v1/your-router.ts
+import {
+  HttpRequest,
+  HttpResponse,
+} from "https://deno.land/x/jurassic/@types/routes.d.ts";
 
 export const method = ["GET", "POST"];
 // or
@@ -98,14 +131,18 @@ export default (req: HttpRequest, res: HttpResponse) => {
 };
 ```
 
+</details>
+
 ### Multiple Handler
 
 In the previous section you can define or restrict router methods, but what if every method have different response or consume different database / service. You can use multiple handler:
 
+<details open>
+<summary>Example Code</summary>
+
 ```typescript
-// Example
-// path: <your_current_directory>/v1/your-router.ts
-import { HttpRequest, HttpResponse } from "https://xxx/@types/routes.d.ts";
+// <your_current_directory>/v1/your-router.ts
+import { HttpRequest, HttpResponse } from "https://deno.land/x/jurassic/@types/routes.d.ts";
 
 export const method = ["GET", "POST"];
 
@@ -120,13 +157,19 @@ export default {
 };
 ```
 
+</details>
+
 ### Overrides Header
 
-```typescript
-// Example
-// path: <your_current_directory>/v1/your-router.ts
+<details open>
+<summary>Example Code</summary>
 
-import { HttpRequest, HttpResponse } from "https://xxx/@types/routes.d.ts";
+```typescript
+// <your_current_directory>/v1/your-router.ts
+import {
+  HttpRequest,
+  HttpResponse,
+} from "https://deno.land/x/jurassic/@types/routes.d.ts";
 
 export const headers = {
   // your http header here
@@ -137,15 +180,22 @@ export default (req: HttpRequest, res: HttpResponse) => {
 };
 ```
 
+</details>
+
 ### Set Content Type
 
 You can set `Content-Type` in `headers` or `contentType` variable. The difference is `contentType` use shortcut.
 
-```typescript
-// Example
-// path: <your_current_directory>/hello.ts
+<details open>
+<summary>Example Code</summary>
 
-import { HttpRequest, HttpResponse } from "https://xxx/@types/routes.d.ts";
+```typescript
+// <your_current_directory>/hello.ts
+
+import {
+  HttpRequest,
+  HttpResponse,
+} from "https://deno.land/x/jurassic/@types/routes.d.ts";
 
 // You can set content type with headers.
 export const headers = {
@@ -163,6 +213,8 @@ export default (req: HttpRequest, res: HttpResponse) => {
   };
 };
 ```
+
+</details>
 
 ### Router Best Practice
 
@@ -184,7 +236,7 @@ But it's okay if you define static route, such as `ping` or `health` (for health
 
 ## Examples
 
-See [Examples](/examples) directory.
+See more examples in [Examples](/examples) directory.
 
 ## License
 
