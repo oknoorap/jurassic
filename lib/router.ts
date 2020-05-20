@@ -268,6 +268,7 @@ export const getRouterHandler = async (
   }
 
   // Parsing body.
+  let isError;
   try {
     const isValidMethod = request.method == method;
     const isValidMethods =
@@ -283,12 +284,13 @@ export const getRouterHandler = async (
     await onRequest(request, response);
     response.body = await handler(request, response);
   } catch (err) {
+    isError = true;
     log.error(request.url, err?.message);
     response.body = await onError(err, request);
   }
 
   if (
-    contentType === CommonContentType.JSON &&
+    (contentType === CommonContentType.JSON || isError) &&
     response.body instanceof Object
   ) {
     response.body = JSON.stringify(response.body);
