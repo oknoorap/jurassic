@@ -11,6 +11,8 @@ A Straightforward REST API Framework for Deno. Zero-config server with path-base
 ✅ Dynamic route params with filename  
 ✅ Suport Hooks
 
+## Table of Contents
+
 <details open>
 <summary>Table of Contents</summary>
 
