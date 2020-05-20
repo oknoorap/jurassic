@@ -7,9 +7,28 @@ A Straightforward REST API Framework for Deno. Zero-config server with path-base
 ## Features
 
 ✅ Zero-Config framework  
-✅ Path-based routing  
-✅ Dynamic routing using filename  
-✅ Hooks
+✅ Instant path-based routing  
+✅ Dynamic route params with filename  
+✅ Suport Hooks
+
+<details open>
+<summary>Table of Contents</summary>
+
+- [Table of Contents](#table-of-contents)
+- [Getting Started](#getting-started)
+  - [Basic Usage](#basic-usage)
+  - [Routers](#routers)
+  - [Run Server](#run-server)
+  - [Dynamic Route Params](#dynamic-route-params)
+  - [Router Methods](#router-methods)
+  - [Multiple Handler](#multiple-handler)
+  - [Overrides Header](#overrides-header)
+  - [Set Content Type](#set-content-type)
+  - [Router Best Pratice](#router-best-practice)
+  - [Custom Config](#custom-config)
+- [Examples](#examples)
+
+</details>
 
 ## Getting Started
 
@@ -83,7 +102,7 @@ PORT: 8888
 
 Now access test in your browser `http://localhost/hello`.
 
-### Dynamic Routes Params
+### Dynamic Route Params
 
 I believe building REST API router should be easy. As NextJS developer, I'm inspired by NextJS API directory, using bracket filename as dynamic routes params.
 
@@ -116,7 +135,7 @@ By default your router will accepts all methods (`GET`, `POST`, `PUT`, `OPTIONS`
 <summary>Example Code</summary>
 
 ```typescript
-// <your_current_directory>/v1/your-router.ts
+// <your_current_directory>/routes/v1/your-router.ts
 import {
   HttpRequest,
   HttpResponse,
@@ -141,7 +160,7 @@ In the previous section you can define or restrict router methods, but what if e
 <summary>Example Code</summary>
 
 ```typescript
-// <your_current_directory>/v1/your-router.ts
+// <your_current_directory>/routes/v1/your-router.ts
 import { HttpRequest, HttpResponse } from "https://deno.land/x/jurassic/@types/routes.d.ts";
 
 export const method = ["GET", "POST"];
@@ -165,7 +184,7 @@ export default {
 <summary>Example Code</summary>
 
 ```typescript
-// <your_current_directory>/v1/your-router.ts
+// <your_current_directory>/routes/v1/your-router.ts
 import {
   HttpRequest,
   HttpResponse,
@@ -190,7 +209,7 @@ You can set `Content-Type` in `headers` or `contentType` variable. The differenc
 <summary>Example Code</summary>
 
 ```typescript
-// <your_current_directory>/hello.ts
+// <your_current_directory>/routes/hello.ts
 
 import {
   HttpRequest,
@@ -234,9 +253,33 @@ But it's okay if you define static route, such as `ping` or `health` (for health
 ✅ /routes/v2/user/[dynamic].ts
 ```
 
+### Custom Config
+
+You can change port and add environment to your project. Create a `server.ts` file in your directory. And export port / env file. We added `SERVER_ENV_` to your environment.
+
+<details open>
+<summary>Example Code</summary>
+
+```typescript
+// <your_current_directory>/server.ts
+// Custom PORT
+export const port = 3000;
+
+// Environment
+export const env = {
+  MY_KEY: "secret-key",
+};
+
+// <your_current_directory>/routes/hello.ts
+// access environment
+Deno.env.get("SERVER_ENV_MY_KEY");
+```
+
+</details>
+
 ## Examples
 
-See more examples in [Examples](/examples) directory.
+See example codes in [Examples](/examples) directory.
 
 ## License
 
