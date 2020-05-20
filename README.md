@@ -78,9 +78,9 @@ export default (req: HttpRequest, res: HttpResponse) => {
 
 ### Run Server
 
-Type this command in your current directory, with your favourite terminal.
+Type this command in your current directory, from your favourite terminal.
 
-`deno --allow-read --allow-net --allow-env https://deno.land/x/jurassic/server.ts` (WIP will updated URL later) .
+`deno --allow-read --allow-net --allow-env https://deno.land/x/jurassic/server.ts`
 
 If you see log below, then your server is running successfuly.
 
