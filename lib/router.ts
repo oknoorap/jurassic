@@ -54,16 +54,20 @@ const getFileParams = (filepath: string) => {
  * @param url File path
  */
 const getURLParams = (url: string, glob: string) => {
-  const params = [];
+  const params: string[] = [];
 
   const paramExpr = new RegExp(
-    `${glob.replace(globExpr, "([a-zA-Z0-9-_]*)")}`,
+    `${glob.replace(globExpr, "([a-zA-Z0-9-_%]*)")}`,
     "g"
   );
-  const matches = url.matchAll(paramExpr);
 
-  for (const [_, captured] of matches) {
-    params.push(captured);
+  const matches = paramExpr.exec(url);
+
+  if (matches) {
+    const [, ...captured] = matches;
+    for (const matched of captured) {
+      params.push(decodeURIComponent(matched));
+    }
   }
 
   return params;
@@ -155,7 +159,7 @@ export const getRouterPatterns = (routerGroups: RouterGroups, url: string) => {
 
   // TODO: Find best practice to find pattern efficiently
   for (const routerList in routerGroups) {
-    const expr = new RegExp(routerList, "g");
+    const expr = new RegExp(routerList.replace(globExpr, "(.[^/]*)"), "g");
 
     if (!expr.test(url)) {
       break;
@@ -229,18 +233,21 @@ export const getRouterHandler = async (
   const {
     default: handler,
     headers: routeHeaders,
+    CORS,
     onError,
     onRequest,
-    contentType,
+    contentType = "text",
     method,
   }: Router = {
     ...defaultRouter,
     ...(await import(router.path)),
   };
 
-  let headerContentType = contentType || "text";
+  let headerContentType = contentType;
   const isCommonContentType =
-    CommonContentType.HTML || CommonContentType.JSON || CommonContentType.Text;
+    headerContentType === CommonContentType.HTML ||
+    headerContentType === CommonContentType.JSON ||
+    headerContentType === CommonContentType.Text;
 
   if (isCommonContentType) {
     switch (contentType) {
@@ -258,6 +265,10 @@ export const getRouterHandler = async (
     }
   }
 
+  if (CORS) {
+    routeHeaders["Access-Control-Allow-Origin"] = CORS;
+  }
+
   if (headerContentType) {
     routeHeaders["Content-Type"] = headerContentType;
   }
@@ -270,19 +281,31 @@ export const getRouterHandler = async (
   // Parsing body.
   let isError;
   try {
-    const isValidMethod = request.method == method;
+    const isValidMethod = request.method === method;
     const isValidMethods =
       Array.isArray(method) && method.includes(request.method);
+    const isValidReq = isValidMethod || isValidMethods;
 
-    if (!(isValidMethod || isValidMethods)) {
+    if (!isValidReq) {
       response.status = 503;
       throw new Error("Invalid http method");
     }
 
+    let currentRouteHandler;
+    if (!(handler instanceof Object && handler.constructor === Object)) {
+      currentRouteHandler = await handler(request, response);
+    } else {
+      const currentHandler = handler[request.method.toLowerCase()];
+      if (currentHandler) {
+        currentRouteHandler = await currentHandler(request, response);
+      }
+    }
+
     request.params = params;
     response.status = 200;
+
     await onRequest(request, response);
-    response.body = await handler(request, response);
+    response.body = currentRouteHandler;
   } catch (err) {
     isError = true;
     log.error(request.url, err?.message);
@@ -291,7 +314,8 @@ export const getRouterHandler = async (
 
   if (
     (contentType === CommonContentType.JSON || isError) &&
-    response.body instanceof Object
+    response.body instanceof Object &&
+    response.body.constructor === Object
   ) {
     response.body = JSON.stringify(response.body);
   }
