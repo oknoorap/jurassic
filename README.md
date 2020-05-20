@@ -9,7 +9,7 @@ A Straightforward REST API Framework for Deno. Zero-config server with path-base
 ✅ Zero-Config framework  
 ✅ Instant path-based routing  
 ✅ Dynamic route params with filename  
-✅ Suport Hooks
+✅ Hooks and Plugins
 
 ## Table of Contents
 
