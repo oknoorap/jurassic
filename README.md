@@ -1,4 +1,4 @@
-![Jurassic Logo](https://raw.githubusercontent.com/oknoorap/jurassic/fix/improvements/docs/logo.png)
+![Jurassic Logo](https://raw.githubusercontent.com/oknoorap/jurassic/master/docs/logo.png)
 
 # 🦖 Jurassic
 
