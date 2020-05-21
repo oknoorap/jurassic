@@ -12,4 +12,5 @@ type Router = {
   default: () => void | Promise<void>;
   headers: any;
   method: HttpMethod | HttpMethod[];
+  CORS: string;
 };
