@@ -19,7 +19,7 @@ type Server = {
 
   // Hooks.
   onBeforeStart: () => Promise<void>;
-  onAfterStart: () => Promise<void>;
+  onStart: () => Promise<void>;
 };
 
 /**
@@ -51,7 +51,7 @@ const initServer = async () => {
 
     // Hooks.
     async onBeforeStart() {},
-    async onAfterStart() {},
+    async onStart() {},
   };
 
   const customServerFile = path.join(Deno.cwd(), "server.ts");
@@ -59,24 +59,27 @@ const initServer = async () => {
     return defaultServerConfig;
   }
 
-  const { port, middleware, env, onBeforeStart, onAfterStart }: Server = {
+  const { port, env, middleware, onBeforeStart, onStart }: Server = {
     ...defaultServerConfig,
     ...(await import(customServerFile)),
   };
 
-  if (env instanceof Object) {
-    defaultServerConfig.env = env;
-    for (const e in env) {
-      Deno.env.set(`SERVER_ENV_${e.toUpperCase}`, e);
+  const serverEnv: [string, any][] = [];
+  if (env instanceof Object && env.constructor === Object) {
+    for (const key in env) {
+      const value = env[key];
+      const envName = `SERVER_ENV_${key.toUpperCase()}`;
+      serverEnv.push([envName, value]);
+      Deno.env.set(envName, value);
     }
   }
 
   return {
     port,
-    env,
+    env: Object.fromEntries(serverEnv),
     middleware,
     onBeforeStart,
-    onAfterStart,
+    onStart,
   };
 };
 
@@ -84,8 +87,13 @@ const initServer = async () => {
  * Start server.
  */
 export const serve = async () => {
-  const { port, env, onBeforeStart, onAfterStart } = await initServer();
+  const { port, env, onBeforeStart, onStart } = await initServer();
   const routers = await getRouters();
+
+  console.log({
+    port,
+    env,
+  });
 
   await onBeforeStart();
   const server = httpServer({ port });
@@ -100,7 +108,7 @@ export const serve = async () => {
     env && {
       label: "environment",
       info: Object.keys(env)
-        .map((item) => `- SERVER_ENV_${item.toUpperCase()}: ${env[item]}`)
+        .map((item) => `- ${item}: ${env[item]}`)
         .join("\n"),
     },
     {
@@ -111,7 +119,7 @@ export const serve = async () => {
     },
   ]);
 
-  await onAfterStart();
+  await onStart();
   for await (const req of server) {
     const [router, params] = getRouterPatterns(routers, req.url);
     const { headers, body, status } = await getRouterHandler(
