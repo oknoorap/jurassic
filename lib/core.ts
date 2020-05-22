@@ -90,26 +90,14 @@ export const serve = async () => {
   const { port, env, onBeforeStart, onStart } = await initServer();
   const routers = await getRouters();
 
-  console.log({
-    port,
-    env,
-  });
-
   await onBeforeStart();
   const server = httpServer({ port });
 
-  logger([
+  const logs = [
     {
       label: "server info",
       info: `PORT: ${port}`,
       options: { padding: false },
-    },
-
-    env && {
-      label: "environment",
-      info: Object.keys(env)
-        .map((item) => `- ${item}: ${env[item]}`)
-        .join("\n"),
     },
     {
       label: "routes",
@@ -117,7 +105,18 @@ export const serve = async () => {
         .map((item) => `- ${item}`)
         .join("\n"),
     },
-  ]);
+  ];
+
+  if (Object.keys(env).length > 0) {
+    logs.push({
+      label: "environment",
+      info: Object.keys(env)
+        .map((item) => `- ${item}: ${env[item]}`)
+        .join("\n"),
+    });
+  }
+
+  logger(logs);
 
   await onStart();
   for await (const req of server) {
