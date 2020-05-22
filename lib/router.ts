@@ -240,7 +240,7 @@ export const getRouterHandler = async (
     method,
   }: Router = {
     ...defaultRouter,
-    ...(await import(router.path)),
+    ...(await import(path.resolve(Deno.cwd(), router.path))),
   };
 
   let headerContentType = contentType;
