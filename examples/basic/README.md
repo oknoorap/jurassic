@@ -10,7 +10,7 @@ git clone https://github.com/oknoorap/jurassic.git
 cd examples/basic
 
 # run server
-deno --allow-read --allow-net --allow-env https://deno.land/x/jurassic/server.ts
+deno run --allow-read --allow-net --allow-env https://deno.land/x/jurassic/server.ts
 ```
 
 ## License
