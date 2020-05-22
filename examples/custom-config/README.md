@@ -11,7 +11,7 @@ cd examples/custom-config
 
 # run server on xxxx port defined by `server.ts`
 # in this case your server will run on port 8080
-deno --allow-read --allow-net --allow-env https://deno.land/x/jurassic/server.ts
+deno run --allow-read --allow-net --allow-env https://deno.land/x/jurassic/server.ts
 ```
 
 ## License
