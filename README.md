@@ -68,7 +68,7 @@ After that, add a `hello.ts` file as your first router, and you're done.
 import {
   HttpRequest,
   HttpResponse,
-} from "https://deno.land/x/jurassic/@types/routes.d.ts";
+} from "https://deno.land/x/jurassic/@types/router.d.ts";
 
 // Route Handler
 export default (req: HttpRequest, res: HttpResponse) => {
@@ -120,7 +120,7 @@ You can accessing param within route handler with `req.params`, e.g `req.params.
 import {
   HttpRequest,
   HttpResponse,
-} from "https://deno.land/x/jurassic/@types/routes.d.ts";
+} from "https://deno.land/x/jurassic/@types/router.d.ts";
 
 export default (req: HttpRequest, res: HttpResponse) => {
   return `Post ID: ${req.params.id}`;
@@ -141,7 +141,7 @@ By default your router will accepts all methods (`GET`, `POST`, `PUT`, `OPTIONS`
 import {
   HttpRequest,
   HttpResponse,
-} from "https://deno.land/x/jurassic/@types/routes.d.ts";
+} from "https://deno.land/x/jurassic/@types/router.d.ts";
 
 export const method = ["GET", "POST"];
 // or
@@ -163,7 +163,7 @@ In the previous section you can define or restrict router methods, but what if e
 
 ```typescript
 // <your_current_directory>/routes/v1/your-router.ts
-import { HttpRequest, HttpResponse } from "https://deno.land/x/jurassic/@types/routes.d.ts";
+import { HttpRequest, HttpResponse } from "https://deno.land/x/jurassic/@types/router.d.ts";
 
 export const method = ["GET", "POST"];
 
@@ -190,7 +190,7 @@ export default {
 import {
   HttpRequest,
   HttpResponse,
-} from "https://deno.land/x/jurassic/@types/routes.d.ts";
+} from "https://deno.land/x/jurassic/@types/router.d.ts";
 
 export const headers = {
   // your http header here
@@ -216,7 +216,7 @@ You can set `Content-Type` in `headers` or `contentType` variable. The differenc
 import {
   HttpRequest,
   HttpResponse,
-} from "https://deno.land/x/jurassic/@types/routes.d.ts";
+} from "https://deno.land/x/jurassic/@types/router.d.ts";
 
 // You can set content type with headers.
 export const headers = {
