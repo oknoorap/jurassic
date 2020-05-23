@@ -8,8 +8,6 @@ type RouterGroups = {
   [key: string]: RouterMeta[];
 };
 
-type HttpMethod = "GET" | "POST" | "OPTIONS" | "DELETE";
-
 type Router = {
   default: () => void | Promise<void>;
   headers: any;

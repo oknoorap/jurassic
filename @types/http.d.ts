@@ -8,3 +8,5 @@ type HttpResponse = {
   status: number;
   setStatus: (code: number) => void;
 };
+
+type HttpMethod = "GET" | "POST" | "OPTIONS" | "DELETE";
