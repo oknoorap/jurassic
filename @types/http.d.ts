@@ -1,6 +1,6 @@
-type HttpRequest = {
-  params?: any;
-} & Request;
+type HttpRequest = Request & {
+  params?: Record<string, unknown>;
+};
 
 type HttpResponse = {
   headers: Headers;
