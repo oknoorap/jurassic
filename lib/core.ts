@@ -15,7 +15,7 @@ type BootstrapLog = {
 type Server = {
   port: number;
   middleware: Promise<void>[];
-  env?: any;
+  env?: Record<string, unknown>;
 
   // Hooks.
   onBeforeStart: () => Promise<void>;
@@ -64,13 +64,14 @@ const initServer = async () => {
     ...(await import(customServerFile)),
   };
 
-  const serverEnv: [string, any][] = [];
+  const serverEnv: Array<[string, unknown]> = [];
   if (env instanceof Object && env.constructor === Object) {
     for (const key in env) {
       const value = env[key];
       const envName = `SERVER_ENV_${key.toUpperCase()}`;
-      serverEnv.push([envName, value]);
-      Deno.env.set(envName, value);
+      const newEnv = <[string, unknown]>[envName, value];
+      serverEnv.push(newEnv);
+      Deno.env.set(envName, value as string);
     }
   }
 
@@ -91,7 +92,6 @@ export const serve = async () => {
   const routers = await getRouters();
 
   await onBeforeStart();
-  const server = httpServer({ port });
 
   const logs = [
     {
@@ -107,11 +107,11 @@ export const serve = async () => {
     },
   ];
 
-  if (Object.keys(env).length > 0) {
+  if (env && Object.keys(env).length > 0) {
     logs.push({
       label: "environment",
       info: Object.keys(env)
-        .map((item) => `- ${item}: ${env[item]}`)
+        .map((item) => `- ${item}: ${env?.[item]}`)
         .join("\n"),
     });
   }
@@ -119,17 +119,19 @@ export const serve = async () => {
   logger(logs);
 
   await onStart();
-  for await (const req of server) {
-    const [router, params] = getRouterPatterns(routers, req.url);
+  httpServer(async (request: HttpRequest) => {
+    const [router, params] = getRouterPatterns(routers, new URL(request.url));
+    request.params = params;
+
     const { headers, body, status } = await getRouterHandler(
       router,
-      req,
+      request,
       params
     );
-    await req.respond({
-      headers,
-      body,
+
+    return new Response(body, {
       status,
+      headers
     });
-  }
+  }, { port });
 };

@@ -147,13 +147,13 @@ export const getRouters = async (): RouterGroups => {
  * @param routerGroups Router groups
  * @param url
  */
-export const getRouterPatterns = (routerGroups: RouterGroups, url: string) => {
+export const getRouterPatterns = (routerGroups: RouterGroups, url: URL) => {
   let currentRouter: RouterMeta | undefined;
-  let currentGlob: string = "";
-  let routerParams: any = {};
+  let currentGlob = "";
+  let routerParams: Record<string, unknown> = {};
 
-  if (routerGroups[url]) {
-    [currentRouter] = routerGroups[url];
+  if (routerGroups[url.pathname]) {
+    [currentRouter] = routerGroups[url.pathname];
     return [currentRouter, routerParams];
   }
 
@@ -161,7 +161,7 @@ export const getRouterPatterns = (routerGroups: RouterGroups, url: string) => {
   for (const routerList in routerGroups) {
     const expr = new RegExp(routerList.replace(globExpr, "(.[^/]*)"), "g");
 
-    if (!expr.test(url)) {
+    if (!expr.test(url.pathname)) {
       break;
     }
 
@@ -180,7 +180,7 @@ export const getRouterPatterns = (routerGroups: RouterGroups, url: string) => {
 
   // Set params
   if (currentRouter) {
-    const params = getURLParams(url, currentGlob);
+    const params = getURLParams(url.pathname, currentGlob);
     routerParams = Object.fromEntries(
       currentRouter.params.map((item: RouterMeta, index: number) => [
         item,
@@ -205,7 +205,7 @@ enum CommonContentType {
 export const getRouterHandler = async (
   router: RouterMeta,
   request: HttpRequest,
-  params: any
+  params: Record<string, unknown>
 ): Promise<HttpResponse> => {
   let body;
   const headers = new Headers();
@@ -219,9 +219,7 @@ export const getRouterHandler = async (
     },
   };
 
-  if (!router) {
-    return response;
-  }
+  if (!router) return response;
 
   const defaultRouter: Router = {
     headers: {},
